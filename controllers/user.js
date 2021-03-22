@@ -2,47 +2,93 @@ const { v4: uuidv4} = require('uuid')
 
 const User = require('../models/user')
 
-let users = [
-	{id: 1, name: 'Ridha Annisa', email: 'ridhaannisa1708@gmail.com'},
-	{id: 2, name: 'ica', email: 'ica@gmail.com'}
-]
+// let users = [
+// 	{id: 1, name: 'Ridha Annisa', email: 'ridhaannisa1708@gmail.com'},
+// 	{id: 2, name: 'ica', email: 'ica@gmail.com'}
+// ]
 
 module.exports = {
 	index: function(request, response){
+		let keyword = {}
+
+		if(request.query.keyword) {
+			keyword = {name: {$regex: request.query.keyword}}
+		}
+
+		// cara pertama
+		// User.find(keyword, "name _id", function(error, users){
+		// 	if (error) console.log(error)
+
+		// 	console.log(users)
+		// response.render('pages/user/index', {users})
+		// })
+
+		// cara kedua
+		const query = User.find(keyword)
+		query.select('name _id')
+		query.exec(function(error, users) {
+			if (error) console.log(error)
+
+			console.log(users)
 		response.render('pages/user/index', {users})
-		
+		})
 	},
 	show: function(request, response) {
 		const id = request.params.id
-		const data = users.filter(user => {
-			return user.id == id 
+		// const data = users.filter(user => {
+		// 	return user.id == id
+		// })
+ 
+		User.findById(id, function(error, data){
+			if (error) console.log(error)
+				console.log(data)
+		response.render('pages/user/show',{user: data})
 		})
-
-		response.render('pages/user/show', {user: data})
 	},
 	create: function(request, response) {
 		response.render('pages/user/create')
 	},
 	store: function(request, response){
-		const user = new User({
+		// cara pertama
+		// const user = new User({
+		// 	name: request.body.name,
+		// 	email: request.body.email,
+		// 	password: request.body.password,
+		// })
+
+		// user.save(function(error, data){
+		// 	if (error) console.log(error)
+
+		// 	console.log(data)
+		// 	response.redirect('/users')
+		// })
+		// cara kedua
+		User.create({
 			name: request.body.name,
 			email: request.body.email,
-			password: request.body.password,
-		})
+			password: request.body.password
 
-		user.save(function(error, data){
+		}, function(error, data){
 			if(error) console.log(error)
 
-			console.log(data)
-		response.redirect('/users')
+		  	console.log(data)
+			response.redirect('/users')
 		})
 
 		// users.push({
 		// 	id: uuidv4(),
 		// 	name: request.body.name,
-		// 	email: request.body.email 
+		// 	email: request.body.email
 		// })
-		
+	},
+	edit: function(request, response) {
+		const id = request.params.id
+
+		User.findById(id, function(error, data){
+			if (error) console.log(error)
+		response.render('pages/user/edit', {user: data})
+		})
+
 	},
 	update: function(request, response){
 		const id = request.params.id

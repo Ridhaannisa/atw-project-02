@@ -15,4 +15,7 @@ router.put('/users/:id', usercontoller.update)
 
 router.delete('/users/:userId', usercontoller.delete)
 
+router.get('/users/:id/edit', usercontoller.edit)
+
+
 module.exports = router

@@ -11,7 +11,7 @@ var myLogger = function (request, response, next) {
 }
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/belajar', {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect('mongodb://localhost/Ridha_Annisa', {useNewUrlParser: true, useUnifiedTopology: true})
 
 
 app.use(myLogger)
